@@ -86,17 +86,17 @@ const store = createStore({
       if (state.filter.rating === 0) {
         state.products = state.copyOfProducts.map(product => product);
       } else {
-        state.products = state.products.filter(product => {
+        state.products = state.copyOfProducts.filter(product => {
             return product.rating === state.filter.rating;
           })
         }
     },
     getProductsByPrice(state) {
-      if (state.filter.price === 0) {
+      if (state.filter.price === 0 || !state.filter.price) {
         state.products = state.copyOfProducts.map(product => product);
       } else {
-        state.products = state.products.filter(product => {
-            return product.price === state.filter.price;
+        state.products = state.copyOfProducts.filter(product => {
+            return product.price === parseInt(state.filter.price);
           })
         }
     },
@@ -105,7 +105,7 @@ const store = createStore({
         state.products = state.copyOfProducts.map(product => product);
       } else {
           // console.log(state.filter.name);
-          state.products = state.products.filter(product => {
+          state.products = state.copyOfProducts.filter(product => {
             if (product.title.toLowerCase().includes(state.filter.name))
               return product;
           })
