@@ -3,30 +3,33 @@
         <div class="categories">
             <span class="cat-title">Categories</span>
             <div class="cat-container">
+                <button @click="showProduct('')" class="all">All</button>
                 <button class="btn prev-btn" @click="scrollLeft">&lt;</button>
                 <div v-if="categories" class="cat-list">
-                    <button v-for="category in categories" :key="category.id" class="cat-btn">{{ category.name }}</button>
+                    <button v-for="category in categories" :key="category" class="cat-btn" @click="showProduct(category)">{{ category }}</button>
                 </div>
                 <button class="btn next-btn" @click="scrollRight">&gt;</button>
             </div>
         </div>
-        
-        <button class="filter-btn"><font-awesome-icon :icon="['fa', 'arrow-down-wide-short']" /><span class="fil-title">Filters</span></button>
+        <button class="filter-btn" @click="toggleFilters"><font-awesome-icon :icon="['fa', 'arrow-down-wide-short']" /><span class="fil-title">Filters</span></button>
     </div>
-    <div class="filter-input">
-        <label for="product-name">
-            Product<br>
-            <input type="text" id="product-name" name="product-name">
-        </label>
-        <label for="price">
-            Price<br>
-            <input type="number" id="price" name="price">
-        </label>
-        <label for="rating" class="rating">
-            Rating
-            <Rating :rating="0" :star-size="25" class="rat"></Rating>
-        </label>
-    </div>
+    <transition name="show">
+        <div v-if="showFilters" class="filter-input">
+            <label for="product-name">
+                Product<br>
+                <input type="text" id="product-name" name="product-name" v-model="name" @input="$event => doFilters('name', $event.target.value, 'name')">
+            </label>
+            <label for="price">
+                Price<br>
+                <input type="number" id="price" name="price" v-model="price" @input="setPrice($event.target.value)">
+            </label>
+            <label for="rating" class="rating">
+                Rating
+                <Rating :star-size="25" class="rat" @takeRating="setRating" v-model="rating"></Rating>
+                
+            </label>
+        </div>
+    </transition>
 </template>
 
 <script>
@@ -35,16 +38,46 @@ import Rating from './Rating.vue';
 export default {
     props: ['categories'],
     name: 'Categories',
+    
     components: {
-        Rating
+        Rating,
     },
 
     data() {
         return {
+            showFilters: false,
+            catName: '',
+            rating: 0,
+            name: '',
+            price: 0
         }
     },
 
+    computed: {
+        
+    },
+
     methods: {
+        doFilters(prop, value, type) {
+            this.$store.dispatch('updateProduct', {prop, value});
+            this.$store.dispatch('filter', {type});
+        },
+        setPrice(price) {
+            this.$store.dispatch('commitUpdatePrice', price);
+            this.$store.dispatch('filterByPrice');
+        },
+        setRating(rating) {
+            // this.rating = rating;
+            this.$store.dispatch('commitUpdateRat', rating);
+            this.$store.dispatch('filterByRat');
+        },
+        showProduct(cat) {
+            this.$store.dispatch('commitUpdateCat', cat);
+            this.$store.dispatch('filterByCat');
+        },
+        toggleFilters() {
+            this.showFilters = !this.showFilters;
+        },
         scrollLeft() {
             let content = document.querySelector(".cat-list");
             content.scrollLeft -= 50;
@@ -80,6 +113,7 @@ export default {
         margin: 0 auto;
         width: 90vw;
         padding: 1em 1.5em;
+        /* min-width: 500px; */
     }
 
     .filter-btn {
@@ -89,6 +123,7 @@ export default {
         border: 1px solid #f3f3f4;
         border-radius: .5em;
         cursor: pointer;
+        margin-right: clamp(5px, 1rem, 5%);
     }
 
     .fil-title {
@@ -116,17 +151,30 @@ export default {
         font-weight: 600;
     }
 
+    .all {
+        border: none;
+        color: #222;
+        font-size: 1.2rem;
+        padding: .2em;
+        margin: 0 1rem;
+        font-weight: bold;
+        border: 5px solid hsl(348, 85%, 64%);
+        cursor: pointer;
+    }
+
     .cat-list {
         display: flex;
         overflow-x: hidden;
         overflow-y: hidden;
         white-space: nowrap;
-        flex-basis: 70%;
+        /* flex-basis: 70%; */
+        width: 50vw;
+        max-width: 700px;
     }
     .cat-btn {
         font-size: 1rem;
         background-color: transparent;
-        color: #6e6d7a;
+        color: #c1c0ca;
         padding: .8em;
         margin: 0 .5rem;
         border: none;
@@ -141,7 +189,7 @@ export default {
 
     .cat-btn:hover {
         color: #222;
-        box-shadow: 0 0 5px 0 #272729;
+        text-shadow: 5px 5px 5px 0 #272729;
     }
 
     .next-btn, .prev-btn {
@@ -161,6 +209,7 @@ export default {
         gap: 5rem;
         padding: 1.5em 5em;
         border-top: 1px solid#f3f3f4;
+        border-bottom: 1px solid#f3f3f4;
     }
 
     label {
@@ -196,5 +245,32 @@ export default {
     .rating {
         place-items: center;
         flex-basis: 50%;
+    }
+
+    .show-enter-from {
+        opacity: 0;
+        transform: translate(0, -60px);
+    }
+    .show-enter-to {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+
+    .show-enter-active {
+        transition: all .3s ease;
+    }
+
+    .show-leave-from {
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+
+    .show-leave-to {
+        opacity: 0;
+        transform: translate(0, -60px);
+    }
+
+    .show-leave-active {
+        transition: all .3s ease;
     }
 </style>

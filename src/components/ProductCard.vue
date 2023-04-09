@@ -1,12 +1,12 @@
 <template>
   <div class="card">
     <img :src="product.images[0]" alt="product.name" class="product-img">
-    <Rating :rating="3" :read-only="true" :star-size="16" class="rating"></Rating>
+    <Rating :rating="product.rating" :read-only="true" :star-size="16" class="rating"></Rating>
     <div class="title">
         <span class="product-name">{{ product.title }}</span>
         <span class="price">${{ product.price }}</span>
     </div>
-    <button class="add-to-cart">Add to Cart</button>
+    <button class="add-to-cart" @click.stop="addItemToCart(product)">Add to Cart</button>
   </div>
 </template>
 
@@ -20,6 +20,13 @@ export default {
 
     components: {
         Rating
+    },
+
+    methods: {
+      addItemToCart(product) {
+        this.$store.dispatch('addItemAction', product);
+      },
+      
     }
 }
 </script>
@@ -31,9 +38,10 @@ export default {
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    max-width: 380px;
     height: 100%;
     border: 2px solid #f3f3fF;
-    border-radius: 10px;
+    border-radius: 5px;
     padding: 1em;
     margin: 1em;
   }
@@ -45,9 +53,11 @@ export default {
   }
 
   .product-img {
-    width: 100%;
+    width: clamp(10vw, 20vw, 90%);
+    max-width: 300px;
     height: 80%;
-    object-fit: cover;
+    max-height: 200px;
+    object-fit: contain;
     border-radius: 10px;
   }
 
@@ -69,19 +79,20 @@ export default {
   }
 
   .add-to-cart {
-    font-size: 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
     color: white;
-    width: 100%;
-    margin-top: 1rem;
-    padding: .5em;
-    background-color: #a0a0ac;
+    width: 50%;
+    margin-top: .5rem;
+    padding: .3em;
+    background-color: hsl(348, 85%, 64%);
     border: 1px solid #f3f3f4;
-    border-radius: 10px;
+    border-radius: 5px;
     cursor: cell;
   }
 
   .add-to-cart:hover {
-    background-color: #6e6d7a;
-    box-shadow: 0 0 5px 0 #272729;
+    background-color: hsl(348, 84%, 53%);
+    box-shadow: 0 0 5px 0 hsl(348, 94%, 47%);
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <star-rating :rating="rating" class="rating" :star-size="20" :show-rating="false"></star-rating>
+  <star-rating @update:rating="setRating" :rating="rating" class="rating" :star-size="20" :show-rating="false" active-color="#f15574"></star-rating>
 </template>
 
 <script>
@@ -10,7 +10,13 @@ export default {
 
     components: {
         StarRating
-    }
+    },
+
+    methods: {
+        setRating(rating) {
+            this.$emit('takeRating', rating);
+        }
+    },
 }
 </script>
 

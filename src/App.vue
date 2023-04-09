@@ -1,14 +1,18 @@
 <template>
   <Navbar />
   <router-view/>
+  <Footer></Footer>
 </template>
 
 <script>
   import Navbar from './components/Navbar.vue';
+  import Footer from '@/components/Footer.vue';
+
   export default {
     name: 'App',
     components: {
-      Navbar
+      Navbar,
+      Footer
     }
   }
 </script>
@@ -31,8 +35,9 @@ body {
   font-family: 'Space Grotesk', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /* text-align: center; */
   color: #2c3e50;
+  /* overflow: hidden; */
 }
 
 a.router-link-exact-active {

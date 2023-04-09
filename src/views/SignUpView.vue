@@ -2,35 +2,32 @@
     <div class="form-container">
         <div class="left-side">
             <div class="title-container">
-                <h2 class="logo"><span>E</span>-Storix</h2>
-                <h1 class="form-title">Log in to your account</h1>
+                <h2 class="logo"><span>E</span>-Store<span>X</span></h2>
+                <h1 class="form-title">Create an account</h1>
             <p class="sub-title">The faster you fill up, the faster you shop</p>
             </div>
             
             <form class="signup-form" @submit.prevent="submit">
                 <div class="user-box">
-                    <input type="text" id="login" name="login" v-model="email" required class="user-input">
-                    <label for="login" class="user-label">Email</label>
+                    <input type="text" id="username" name="username" v-model="username" required class="user-input">
+                    <label for="username" class="user-label">Username</label>
+                </div>
+                <div class="user-box">
+                    <input type="email" id="email" name="email" v-model="email" required class="user-input">
+                    <label for="email" class="user-label" id="email-label">Email</label>
                 </div>
                 <div class="user-box">
                     <input type="password" id="password" name="password" v-model="password" required class="user-input">
                     <label for="password" class="user-label">Password</label>
                 </div>
-                <div class="forget">
-                    <label for="remember" class="remember">
-                        <input class="remember" type="checkbox" name="remember" id="remember">
-                        Remember me
-                    </label>
-                    <a href="#" class="forget-pass">Forgot Password?</a>
-                </div>
-                <div v-if="error" class="error">{{ error }}</div>
-                <button class="submit-btn">Sign in</button>
-                <p class="already">You don't have an acount? <a href="">Create account</a> </p>
+                <button class="submit-btn">Create Account</button>
+                <p class="already">already have an account? <a href="">Log in</a> </p>
             </form>
+            <div v-if="error" class="error">{{ error }}</div>
         </div>
         
         <div class="side-img">
-            <h2 class="right-side-title">E-STORIX
+            <h2 class="right-side-title">E-STOREX
             </h2>
             <span>The Store You Need</span>
             <img src="https://images.unsplash.com/photo-1628911774602-74a0cfee9b0d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80" alt="products">
@@ -45,8 +42,8 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 
 export default {
-    
     setup() {
+        
         const username = ref('');
         const email = ref('');
         const password = ref('');
@@ -58,14 +55,14 @@ export default {
         const submit = async () => {
             console.log(username.value, email.value, password.value);
             try {
-                await store.dispatch('login', { email: email.value, password: password.value });
+                await store.dispatch('signup', { email: email.value, password: password.value });
                 router.push('/');
             } catch(err) {
                 error.value = err.message;
             }
         }
         return { submit, username, email, password, error };
-    }
+    },
 }
 </script>
 
@@ -173,7 +170,7 @@ export default {
         background: transparent;
     }
 
-    .user-box:not(.user-box:nth-child(2)) {
+    .user-box:not(.user-box:nth-child(3)) {
         margin-bottom: 1.5rem;
     }
 
@@ -187,15 +184,15 @@ export default {
         pointer-events: none;
         transition: 0.5s;
     }
-
+    /*   */
     .user-input:focus ~ .user-label,
-    .user-input:valid ~ .user-label {
+    .user-input:valid ~ .user-label
+    {
         top: -1.2em;
         left: 0;
         color: #000;
         font-size: 0.8rem;
     }
-
     .submit-btn {
         background: #000;
         color: #fff;
@@ -205,11 +202,10 @@ export default {
         border-radius: 5px;
         cursor: pointer;
         transition: 0.5s;
-        margin-top: 1em;
+        margin-top: 2em;
     }
 
     .submit-btn:hover {
-        /* background: #333; */
         box-shadow: 0 0 10px hsl(348, 85%, 64%);
     }
 
@@ -226,29 +222,6 @@ export default {
         text-decoration: none;
     }
 
-    .forget {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 1em;
-    }
-
-    .remember {
-        font-size: .8rem;
-        color: #777;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-    }
-
-    .forget-pass {
-        font-size: .8rem;
-        color: #333;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
     .error {
         color: red;
         font-size: .8rem;
